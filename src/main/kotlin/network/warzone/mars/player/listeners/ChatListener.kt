@@ -130,8 +130,12 @@ class ChatListener : Listener {
             return@runBlocking
         }
         val chatChannel =
-            if (context.matchPlayer.isVanished && context.player.hasPermission(Permissions.ADMINCHAT)) SettingValue.CHAT_ADMIN
-            else context.matchPlayer.settings.getValue(SettingKey.CHAT)
+            //TODO: Updating to 0.16 PGM snapshot caused this to throw an error:
+            // "Unresolved reference: isVanished"
+            /**if (context.matchPlayer.isVanished && context.player.hasPermission(Permissions.ADMINCHAT)) SettingValue.CHAT_ADMIN
+            else context.matchPlayer.settings.getValue(SettingKey.CHAT)**/
+            //TODO: Replacing temporarily with:
+            context.matchPlayer.settings.getValue(SettingKey.CHAT)
 
         val isChatEnabled = Mars.get().config.getBoolean("chat.enabled")
         if (chatChannel == SettingValue.CHAT_GLOBAL && !isChatEnabled && !player.hasPermission("mars.chat.mute.bypass")) {
