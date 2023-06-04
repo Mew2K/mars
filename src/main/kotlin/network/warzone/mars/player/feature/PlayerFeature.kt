@@ -14,7 +14,6 @@ import network.warzone.mars.player.commands.ModCommands
 import network.warzone.mars.player.commands.StatCommands
 import network.warzone.mars.player.models.PlayerProfile
 import network.warzone.mars.player.models.Session
-import network.warzone.mars.player.perks.JoinSoundService
 import network.warzone.mars.player.perks.PerkCommands
 import network.warzone.mars.punishment.models.Punishment
 import network.warzone.mars.rank.RankAttachments
@@ -33,7 +32,6 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import tc.oc.pgm.api.Permissions
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -183,7 +181,10 @@ object PlayerFeature : NamedCachedFeature<PlayerProfile>(), Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player.matchPlayer
         val join = queuedJoins[player.id] ?: return
-        if (!player.isVanished) {
+
+        //TODO: Updating to 0.16 PGM snapshot caused this to throw an error:
+        // "Unresolved reference: isVanished"
+        /**if (!player.isVanished) {
             Bukkit.broadcastMessage("${ChatColor.GRAY}${event.player.name} joined. ${if (join.isNew) "${ChatColor.LIGHT_PURPLE}[NEW]" else ""}")
             val joinSoundId = join.profile.activeJoinSoundId
             if (joinSoundId != null) {
@@ -197,7 +198,9 @@ object PlayerFeature : NamedCachedFeature<PlayerProfile>(), Listener {
                 .filter { it.hasPermission(Permissions.ADMINCHAT) }
                 .forEach {
                     it.sendMessage("${ChatColor.GRAY}${ChatColor.ITALIC}${event.player.name} joined quietly.")
-                }
+                }**/
+        //TODO: Replacing temporarily with:
+        Bukkit.broadcastMessage("${ChatColor.GRAY}${event.player.name} joined. ${if (join.isNew) "${ChatColor.LIGHT_PURPLE}[NEW]" else ""}")
 
         val xpMultiplier = AdminService.getCurrentEvents()?.xpMultiplier
         if (xpMultiplier?.value != null) {
@@ -211,14 +214,18 @@ object PlayerFeature : NamedCachedFeature<PlayerProfile>(), Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerLeave(event: PlayerQuitEvent) {
         val player = event.player.matchPlayer
-        if (!player.isVanished)
+        //TODO: Updating to 0.16 PGM snapshot caused this to throw an error:
+        // "Unresolved reference: isVanished"
+        /**if (!player.isVanished)
             Bukkit.broadcastMessage("${ChatColor.GRAY}${event.player.name} left.")
         else
             Bukkit.getOnlinePlayers()
                 .filter { it.hasPermission(Permissions.ADMINCHAT) }
                 .forEach {
                     it.sendMessage("${ChatColor.GRAY}${ChatColor.ITALIC}${event.player.name} left quietly.")
-                }
+                }**/
+        //TODO: Replacing temporarily with:
+        Bukkit.broadcastMessage("${ChatColor.GRAY}${event.player.name} left.")
     }
 
     @EventHandler
